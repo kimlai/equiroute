@@ -8,8 +8,12 @@
             <%= for source <- stats.sources do %>
               <li>
                 <b><%= source.name %></b>
-                <div>🚗 <%= source.car %></h3>
-                <div>🚅
+                <div <%= if source.car == stats.max_car, do: "class=max" %>>
+                  🚗 <%= source.car %>
+                </div>
+                </h3>
+                <div <%= if source.train == stats.max_train, do: "class=max" %>>
+                  🚅
                   <%= if source.train != nil do %>
                     <%= source.train %>
                   <% else %>
@@ -24,7 +28,7 @@
           <summary>Statistiques</summary>
           <div>Temps total : <%= stats.total %></div>
           <div>Temps moyen : <%= stats.avg %></div>
-          <div>Max : <%= stats.max %></div>
+          <div>Max : <%= stats.max_car %></div>
           <div>Étendue : <%= stats.range %></div>
           <div>Écart-type : <%= stats.std_deviation %></div>
         </details>

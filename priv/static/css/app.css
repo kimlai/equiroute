@@ -51,3 +51,7 @@ p {
 .result--sources li {
   margin: 1rem;
 }
+
+.max {
+  color: red;
+}

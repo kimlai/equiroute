@@ -31,26 +31,35 @@ defmodule EquirouteWeb.PageController do
       params["destinations"]
       |> Enum.map(&Sncf.place/1)
 
-    matrix = Mapbox.matrix(sources, destinations)
+    car_matrix = Mapbox.matrix(sources, destinations)
+
+    train_matrix =
+      for source <- sources, into: [] do
+        for destination <- destinations, into: [] do
+          Sncf.journey_duration(source.sncf_id, destination.sncf_id)
+        end
+      end
 
     result =
       for {destination, j} <- Enum.with_index(destinations), into: %{} do
-        dest_durations = Enum.map(matrix["durations"], &Enum.at(&1, j))
+        car_durations = Enum.map(car_matrix["durations"], &Enum.at(&1, j))
+        train_durations = Enum.map(train_matrix, &Enum.at(&1, j))
 
         stats = %{
-          total: Enum.sum(dest_durations) |> TimeFormat.format(),
-          avg: Stats.avg(dest_durations) |> TimeFormat.format(),
-          max: Enum.max(dest_durations) |> TimeFormat.format(),
-          range: Stats.range(dest_durations) |> TimeFormat.format(),
-          std_deviation: Stats.standard_deviation(dest_durations) |> TimeFormat.format(),
+          total: Enum.sum(car_durations) |> TimeFormat.format(),
+          avg: Stats.avg(car_durations) |> TimeFormat.format(),
+          max_car: Enum.max(car_durations) |> TimeFormat.format(),
+          max_train: Enum.max(train_durations) |> TimeFormat.format(),
+          range: Stats.range(car_durations) |> TimeFormat.format(),
+          std_deviation: Stats.standard_deviation(car_durations) |> TimeFormat.format(),
           sources:
             for {source, i} <- Enum.with_index(sources), into: [] do
               car =
-                Enum.at(Enum.at(matrix["durations"], i), j)
+                Enum.at(Enum.at(car_matrix["durations"], i), j)
                 |> TimeFormat.format()
 
               train =
-                Sncf.journey_duration(source.sncf_id, destination.sncf_id)
+                Enum.at(Enum.at(train_matrix, i), j)
                 |> TimeFormat.format()
 
               %{
