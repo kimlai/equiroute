@@ -1,0 +1,62 @@
+:root {
+  font-size: 1rem;
+}
+
+* {
+  font-family: monospace;
+}
+
+body {
+  padding: 1rem;
+}
+@media (min-width: 48em) {
+  body {
+    padding: 5rem;
+  }
+}
+
+.flow > * + * {
+  margin-top: 1rem;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+form > * + * {
+  margin-top: 1.5rem;
+}
+
+p {
+  max-width: 80ch;
+  margin-bottom: 3rem;
+}
+
+.result {
+  padding-left: 0;
+}
+
+.result > * + * {
+  margin-top: 4rem;
+}
+
+.result--sources {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -1rem;
+  padding-left: 0;
+}
+
+.result--sources li {
+  margin: 1rem;
+}
+
+.max {
+  color: red;
+}
+
+.cta {
+  text-align: center;
+  margin-bottom: 4rem;
+}
