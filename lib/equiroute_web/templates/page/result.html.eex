@@ -4,32 +4,44 @@
       <a href="<%= random_link(@sources, @random_sncf_ids) %>">Au hasard</a>
     </div>
     <ul role="list" class="result">
-      <%= for {destination, stats} <- @result do %>
-        <li class="flow">
-          <h2><%= destination %></h2>
-          <div>
-            <ul class="result--sources" role="list">
-              <%= for source <- stats.sources do %>
-                <li>
-                  <b><%= source.name %></b>
-                  <div <%= if source.car == stats.max_car, do: "class=max" %>>
-                    🚗 <%= format(source.car) %>
-                  </div>
-                  </h3>
-                  <div <%= if source.train == stats.max_train && source.train != nil, do: "class=max" %>>
-                    🚅
-                    <%= if source.train != nil do %>
-                      <%= format(source.train) %>
-                    <% else %>
-                      n/a
-                    <% end %>
-                  </div>
-                </li>
-              <% end %>
-            </ul>
+      <%= for {{destination, stats}, i} <- Enum.with_index(@result) do %>
+        <li>
+          <div class="flex">
+            <div
+              id="map_<%= i %>"
+              style="width: 9rem; height: 9rem;"
+              class="map"
+              data-lon="<%= Enum.at(stats.coordinates, 0) %>"
+              data-lat="<%= Enum.at(stats.coordinates, 1) %>"
+            ></div>
+            <div class="flow">
+              <h2><%= destination %></h2>
+              <div>
+                <ul class="result--sources" role="list">
+                  <%= for source <- stats.sources do %>
+                    <li>
+                      <b><%= source.name %></b>
+                      <div <%= if source.car == stats.max_car, do: "class=max" %>>
+                        🚗 <%= format(source.car) %>
+                      </div>
+                      </h3>
+                      <div <%= if source.train == stats.max_train && source.train != nil, do: "class=max" %>>
+                        🚅
+                        <%= if source.train != nil do %>
+                          <%= format(source.train) %>
+                        <% else %>
+                          n/a
+                        <% end %>
+                      </div>
+                    </li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
           </div>
         </li>
       <% end %>
     </ul>
   </div>
 </div>
+<script defer src="<%= Routes.static_path(@conn, "/js/map.js") %>"></script>

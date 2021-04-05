@@ -55,6 +55,7 @@ defmodule EquirouteWeb.PageController do
           max_train: Enum.max(train_durations),
           range: Stats.range(car_durations),
           std_deviation: Stats.standard_deviation(car_durations),
+          coordinates: destination.coordinates,
           sources:
             for {source, i} <- Enum.with_index(sources), into: [] do
               car = Enum.at(Enum.at(car_matrix["durations"], i), j)
