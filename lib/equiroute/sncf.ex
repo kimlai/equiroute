@@ -4,59 +4,34 @@ defmodule Equiroute.Sncf do
   @base_url "https://api.sncf.com/v1/coverage/sncf"
 
   def find_place(query) do
-    query_params = [
-      q: query,
-      type: ["administrative_region"]
-    ]
-
-    case send_request("/places", query_params) do
-      {:ok, %{"places" => places}} ->
-        for place <- places, into: [] do
-          %{
-            name: place["name"],
-            sncf_id: place["administrative_region"]["id"]
-          }
-        end
-
-      {:error, _} ->
-        "priv/sncf_data/administrative_regions"
-        |> File.read!()
-        |> :erlang.binary_to_term()
-        |> Enum.filter(&String.contains?(String.downcase(&1["name"]), String.downcase(query)))
-        |> Enum.map(&Map.put(&1, :sncf_id, &1["id"]))
-        |> Enum.map(&Map.put(&1, :name, &1["label"]))
+    similarity = fn place ->
+      String.jaro_distance(String.downcase(place["name"]), String.downcase(query))
     end
+
+    "priv/sncf_data/administrative_regions"
+    |> File.read!()
+    |> :erlang.binary_to_term()
+    |> Enum.filter(&(similarity.(&1) > 0.8))
+    |> Enum.sort_by(&similarity.(&1), :desc)
+    |> Enum.map(&Map.put(&1, :sncf_id, &1["id"]))
+    |> Enum.map(&Map.put(&1, :name, &1["name"]))
   end
 
   def place(id) do
-    place =
-      case send_request("/places/#{id}") do
-        {:ok, %{"places" => [place | []]}} ->
-          %{
-            name: String.replace(place["name"], ~r/\s*\(.*?\)\s*/, ""),
-            coordinates: [
-              place["administrative_region"]["coord"]["lon"],
-              place["administrative_region"]["coord"]["lat"]
-            ],
-            sncf_id: place["administrative_region"]["id"]
-          }
+    region =
+      "priv/sncf_data/administrative_regions"
+      |> File.read!()
+      |> :erlang.binary_to_term()
+      |> Enum.find(&(&1["id"] == id))
 
-        {:error, _} ->
-          region =
-            "priv/sncf_data/administrative_regions"
-            |> File.read!()
-            |> :erlang.binary_to_term()
-            |> Enum.find(&(&1["id"] == id))
-
-          %{
-            name: region["name"],
-            coordinates: [
-              region["coord"]["lon"],
-              region["coord"]["lat"]
-            ],
-            sncf_id: region["id"]
-          }
-      end
+    %{
+      name: region["name"],
+      coordinates: [
+        region["coord"]["lon"],
+        region["coord"]["lat"]
+      ],
+      sncf_id: region["id"]
+    }
   end
 
   def journey_duration(from, to) do
