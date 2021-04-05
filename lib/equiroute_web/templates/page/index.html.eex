@@ -13,11 +13,19 @@
   </fieldset>
   <fieldset>
     <legend>Se retrouver à</legend>
-    <input name="destinations[]" placeholder="Clermont-Ferrand"/>
-    <input name="destinations[]" placeholder="Brest"/>
-    <input name="destinations[]" placeholder="Bourges"/>
-    <input name="destinations[]" placeholder="Pau"/>
-    <input name="destinations[]" placeholder="Lons-le-Saunier"/>
+    <div class="flow">
+      <div>
+        <input name="destinations[]" placeholder="Clermont-Ferrand"/>
+        <input name="destinations[]" placeholder="Brest"/>
+        <input name="destinations[]" placeholder="Bourges"/>
+        <input name="destinations[]" placeholder="Pau"/>
+        <input name="destinations[]" placeholder="Lons-le-Saunier"/>
+      </div>
+      <div>
+        <input id="random" type="checkbox" name="random" value="true">
+        <label for="random">Voir 10 destinations au hasard</label>
+      </div>
+    </div>
   </fieldset>
   <button>C'est parti</button>
 </form>

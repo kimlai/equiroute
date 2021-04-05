@@ -14,13 +14,24 @@
   </fieldset>
   <fieldset>
     <legend>Se retrouver à</legend>
-    <%= for destinations <- @destinations do %>
-      <select name="destinations[]" />
-        <%= for option <- destinations do %>
-          <option value="<%= option.sncf_id %>"><%= option.name %></option>
+    <div class="flow">
+      <div>
+        <%= for destinations <- @destinations do %>
+          <select name="destinations[]" />
+            <%= for option <- destinations do %>
+              <option value="<%= option.sncf_id %>"><%= option.name %></option>
+            <% end %>
+          </select>
         <% end %>
-      </select>
-    <% end %>
+      </div>
+      <div>
+        <input
+          id="random" type="checkbox" name="random" value="true"
+          <%= if @random, do: "checked" %>
+        >
+        <label for="random">Voir 10 destinations au hasard</label>
+      </div>
+    </div>
   </fieldset>
   <button>Lancer les calculs</button>
 </form>
