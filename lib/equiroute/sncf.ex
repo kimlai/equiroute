@@ -29,24 +29,47 @@ defmodule Equiroute.Sncf do
   end
 
   def place(id) do
-    {:ok, %{"places" => [place | []]}} = send_request("/places/#{id}")
+    place =
+      case send_request("/places/#{id}") do
+        {:ok, %{"places" => [place | []]}} ->
+          %{
+            name: String.replace(place["name"], ~r/\s*\(.*?\)\s*/, ""),
+            coordinates: [
+              place["administrative_region"]["coord"]["lon"],
+              place["administrative_region"]["coord"]["lat"]
+            ],
+            sncf_id: place["administrative_region"]["id"]
+          }
 
-    %{
-      name: String.replace(place["name"], ~r/\s*\(.*?\)\s*/, ""),
-      coordinates: [
-        place["administrative_region"]["coord"]["lon"],
-        place["administrative_region"]["coord"]["lat"]
-      ],
-      sncf_id: place["administrative_region"]["id"]
-    }
+        {:error, _} ->
+          region =
+            "priv/sncf_data/administrative_regions"
+            |> File.read!()
+            |> :erlang.binary_to_term()
+            |> Enum.find(&(&1["id"] == id))
+
+          %{
+            name: region["name"],
+            coordinates: [
+              region["coord"]["lon"],
+              region["coord"]["lat"]
+            ],
+            sncf_id: region["id"]
+          }
+      end
   end
 
   def journey_duration(from, to) do
-    "/journeys"
-    |> send_request(from: from, to: to)
-    |> Map.get("journeys", [])
-    |> Enum.map(& &1["durations"]["total"])
-    |> Enum.min(fn -> nil end)
+    case send_request("/journeys", from: from, to: to) do
+      {:ok, response} ->
+        response
+        |> Map.get("journeys", [])
+        |> Enum.map(& &1["durations"]["total"])
+        |> Enum.min(fn -> nil end)
+
+      {:error, _} ->
+        nil
+    end
   end
 
   def all_administrative_regions() do

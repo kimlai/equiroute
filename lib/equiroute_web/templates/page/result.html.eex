@@ -16,12 +16,12 @@
                     🚗 <%= format(source.car) %>
                   </div>
                   </h3>
-                  <div <%= if source.train == stats.max_train, do: "class=max" %>>
+                  <div <%= if source.train == stats.max_train && source.train != nil, do: "class=max" %>>
                     🚅
                     <%= if source.train != nil do %>
                       <%= format(source.train) %>
                     <% else %>
-                      N/A
+                      n/a
                     <% end %>
                   </div>
                 </li>
