@@ -24,14 +24,6 @@
             <% end %>
           </ul>
         </div>
-        <details>
-          <summary>Statistiques</summary>
-          <div>Temps total : <%= stats.total %></div>
-          <div>Temps moyen : <%= stats.avg %></div>
-          <div>Max : <%= stats.max_car %></div>
-          <div>Étendue : <%= stats.range %></div>
-          <div>Écart-type : <%= stats.std_deviation %></div>
-        </details>
       </li>
     <% end %>
   </li>
