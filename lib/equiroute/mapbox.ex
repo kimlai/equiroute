@@ -1,7 +1,6 @@
 defmodule Equiroute.Mapbox do
   def matrix(sources, destinations) do
-    token =
-      "pk.eyJ1Ijoia2ltbGFpIiwiYSI6ImNpdHg4b3psMDAwMnAzd29hZ2VrbzVmeTcifQ.JEzjYNojtEPRBove3beibA"
+    token = System.get_env("MAPBOX_TOKEN")
 
     coordinates =
       (sources ++ destinations)

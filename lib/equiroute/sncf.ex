@@ -1,14 +1,15 @@
 defmodule Equiroute.Sncf do
-  @token "6c5686c3-7106-4386-8b08-ddcb0e233d88"
+  alias Plug.Conn.Query
+
   @base_url "https://api.sncf.com/v1/coverage/sncf"
 
   def find_place(query) do
-    url = "#{@base_url}/places?q=#{query}&type[]=administrative_region&key=#{@token}"
+    query_params = [
+      q: query,
+      type: ["administrative_region"]
+    ]
 
-    {:ok, %Finch.Response{body: body}} =
-      Finch.build(:get, URI.encode(url)) |> Finch.request(MyFinch)
-
-    %{"places" => places} = Jason.decode!(body)
+    %{"places" => places} = send_request("/places", query_params)
 
     for place <- places, into: [] do
       %{
@@ -19,12 +20,7 @@ defmodule Equiroute.Sncf do
   end
 
   def place(id) do
-    url = "#{@base_url}/places/#{id}?key=#{@token}"
-
-    {:ok, %Finch.Response{body: body}} =
-      Finch.build(:get, URI.encode(url)) |> Finch.request(MyFinch)
-
-    %{"places" => [place | []]} = Jason.decode!(body)
+    %{"places" => [place | []]} = send_request("/places/#{id}")
 
     %{
       name: String.replace(place["name"], ~r/\s*\(.*?\)\s*/, ""),
@@ -37,14 +33,20 @@ defmodule Equiroute.Sncf do
   end
 
   def journey_duration(from, to) do
-    url = "#{@base_url}/journeys?from=#{from}&to=#{to}&key=#{@token}"
-
-    {:ok, %Finch.Response{body: body}} =
-      Finch.build(:get, URI.encode(url)) |> Finch.request(MyFinch)
-
-    Jason.decode!(body)
+    "/journeys"
+    |> send_request(from: from, to: to)
     |> Map.get("journeys", [])
     |> Enum.map(& &1["durations"]["total"])
     |> Enum.min(fn -> nil end)
+  end
+
+  defp send_request(url, query_params \\ []) do
+    token = System.get_env("SNCF_TOKEN")
+    params = Query.encode(query_params ++ [key: token])
+    url = "#{@base_url}#{url}?#{params}"
+
+    {:ok, %Finch.Response{body: body}} = Finch.build(:get, url) |> Finch.request(MyFinch)
+
+    Jason.decode!(body)
   end
 end
