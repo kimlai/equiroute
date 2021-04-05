@@ -71,9 +71,7 @@ defmodule EquirouteWeb.PageController do
 
         {destination.name, stats}
       end
-      |> Enum.sort_by(fn {_, stats} ->
-        Enum.min([stats.max_car, stats.max_train] |> IO.inspect()) |> IO.inspect()
-      end)
+      |> Enum.sort_by(fn {_, stats} -> Enum.min([stats.max_car, stats.max_train]) end)
 
     random_sncf_ids =
       10

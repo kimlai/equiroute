@@ -9,18 +9,27 @@ defmodule Equiroute.Sncf do
       type: ["administrative_region"]
     ]
 
-    %{"places" => places} = send_request("/places", query_params)
+    case send_request("/places", query_params) do
+      {:ok, %{"places" => places}} ->
+        for place <- places, into: [] do
+          %{
+            name: place["name"],
+            sncf_id: place["administrative_region"]["id"]
+          }
+        end
 
-    for place <- places, into: [] do
-      %{
-        name: place["name"],
-        sncf_id: place["administrative_region"]["id"]
-      }
+      {:error, _} ->
+        "priv/sncf_data/administrative_regions"
+        |> File.read!()
+        |> :erlang.binary_to_term()
+        |> Enum.filter(&String.contains?(String.downcase(&1["name"]), String.downcase(query)))
+        |> Enum.map(&Map.put(&1, :sncf_id, &1["id"]))
+        |> Enum.map(&Map.put(&1, :name, &1["label"]))
     end
   end
 
   def place(id) do
-    %{"places" => [place | []]} = send_request("/places/#{id}")
+    {:ok, %{"places" => [place | []]}} = send_request("/places/#{id}")
 
     %{
       name: String.replace(place["name"], ~r/\s*\(.*?\)\s*/, ""),
@@ -47,7 +56,7 @@ defmodule Equiroute.Sncf do
   end
 
   def all_administrative_regions(url) do
-    %{"links" => links, "stop_areas" => stop_areas} = get_json(url)
+    %{"links" => links, "stop_areas" => stop_areas} = get_json!(url)
 
     administrative_regions =
       stop_areas
@@ -85,7 +94,22 @@ defmodule Equiroute.Sncf do
   end
 
   defp get_json(url) do
-    {:ok, %Finch.Response{body: body}} = Finch.build(:get, url) |> Finch.request(MyFinch)
-    Jason.decode!(body)
+    Finch.build(:get, url)
+    |> Finch.request(MyFinch)
+    |> case do
+      {:ok, %Finch.Response{status: 200, body: body}} ->
+        {:ok, Jason.decode!(body)}
+
+      {:ok, %Finch.Response{status: 429}} ->
+        {:error, :quota_limit_reached}
+
+      _ ->
+        {:error, :unknown}
+    end
+  end
+
+  defp get_json!(url) do
+    {:ok, response} = get_json(url)
+    response
   end
 end
