@@ -1,38 +1,23 @@
-<section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
-  <p>Peace of mind from prototype to production</p>
-</section>
+<p>
+  Trouvez l'endroit le plus équitable pour se retrouver à plusieurs.
+</p>
 
-<section class="row">
-  <article class="column">
-    <h2>Resources</h2>
-    <ul>
-      <li>
-        <a href="https://hexdocs.pm/phoenix/overview.html">Guides &amp; Docs</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix">Source</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix/blob/v1.5/CHANGELOG.md">v1.5 Changelog</a>
-      </li>
-    </ul>
-  </article>
-  <article class="column">
-    <h2>Help</h2>
-    <ul>
-      <li>
-        <a href="https://elixirforum.com/c/phoenix-forum">Forum</a>
-      </li>
-      <li>
-        <a href="https://webchat.freenode.net/?channels=elixir-lang">#elixir-lang on Freenode IRC</a>
-      </li>
-      <li>
-        <a href="https://twitter.com/elixirphoenix">Twitter @elixirphoenix</a>
-      </li>
-      <li>
-        <a href="https://elixir-slackin.herokuapp.com/">Elixir on Slack</a>
-      </li>
-    </ul>
-  </article>
-</section>
+<form action="/select-cities">
+  <fieldset>
+    <legend>Départs de</legend>
+    <input name="sources[]" placeholder="Paris" />
+    <input name="sources[]" placeholder="Marseille"/>
+    <input name="sources[]" placeholder="Lyon"/>
+    <input name="sources[]" placeholder="Nantes"/>
+    <input name="sources[]" placeholder="Blois"/>
+  </fieldset>
+  <fieldset>
+    <legend>Se retrouver à</legend>
+    <input name="destinations[]" placeholder="Clermont-Ferrand"/>
+    <input name="destinations[]" placeholder="Brest"/>
+    <input name="destinations[]" placeholder="Bourges"/>
+    <input name="destinations[]" placeholder="Pau"/>
+    <input name="destinations[]" placeholder="Lons-le-Saunier"/>
+  </fieldset>
+  <button>C'est parti</button>
+</form>

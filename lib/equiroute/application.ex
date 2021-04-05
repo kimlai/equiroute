@@ -12,9 +12,10 @@ defmodule Equiroute.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: Equiroute.PubSub},
       # Start the Endpoint (http/https)
-      EquirouteWeb.Endpoint
+      EquirouteWeb.Endpoint,
       # Start a worker by calling: Equiroute.Worker.start_link(arg)
       # {Equiroute.Worker, arg}
+      {Finch, name: MyFinch}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

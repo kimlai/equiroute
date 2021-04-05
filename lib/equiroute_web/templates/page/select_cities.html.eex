@@ -1,0 +1,26 @@
+<p>
+  Choisissez les gares de départ et d'arrivée
+</p>
+<form action="/result">
+  <fieldset>
+    <legend>Départs de</legend>
+    <%= for source <- @sources do %>
+      <select name="sources[]" />
+        <%= for option <- source do %>
+          <option value="<%= option.sncf_id %>"><%= option.name %></option>
+        <% end %>
+      </select>
+    <% end %>
+  </fieldset>
+  <fieldset>
+    <legend>Arrivées à</legend>
+    <%= for destinations <- @destinations do %>
+      <select name="destinations[]" />
+        <%= for option <- destinations do %>
+          <option value="<%= option.sncf_id %>"><%= option.name %></option>
+        <% end %>
+      </select>
+    <% end %>
+  </fieldset>
+  <button>Lancer les calculs</button>
+</form>

@@ -17,6 +17,8 @@ defmodule EquirouteWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/select-cities", PageController, :select_cities
+    get "/result", PageController, :compute
   end
 
   # Other scopes may use custom stacks.

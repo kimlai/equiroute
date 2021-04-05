@@ -1,0 +1,25 @@
+:root {
+  font-size: 1rem;
+}
+
+* {
+  font-family: monospace;
+}
+
+body {
+  padding: 1rem;
+}
+@media (min-width: 48em) {
+  body {
+    padding: 5rem;
+  }
+}
+
+form > * + * {
+  margin-top: 1.5rem;
+}
+
+p {
+  max-width: 80ch;
+  margin-bottom: 3rem;
+}
