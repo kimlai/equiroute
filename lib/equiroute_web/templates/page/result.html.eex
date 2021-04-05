@@ -1,30 +1,35 @@
 <div class="center">
-  <ul role="list" class="result">
-    <%= for {destination, stats} <- @result do %>
-      <li class="flow">
-        <h2><%= destination %></h2>
-        <div>
-          <ul class="result--sources" role="list">
-            <%= for source <- stats.sources do %>
-              <li>
-                <b><%= source.name %></b>
-                <div <%= if source.car == stats.max_car, do: "class=max" %>>
-                  🚗 <%= source.car %>
-                </div>
-                </h3>
-                <div <%= if source.train == stats.max_train, do: "class=max" %>>
-                  🚅
-                  <%= if source.train != nil do %>
-                    <%= source.train %>
-                  <% else %>
-                    pas de trajet trouvé
-                  <% end %>
-                </div>
-              </li>
-            <% end %>
-          </ul>
-        </div>
-      </li>
-    <% end %>
-  </li>
+  <div>
+    <div class="cta">
+      <a href="<%= random_link(@sources, @random_sncf_ids) %>">Au hasard</a>
+    </div>
+    <ul role="list" class="result">
+      <%= for {destination, stats} <- @result do %>
+        <li class="flow">
+          <h2><%= destination %></h2>
+          <div>
+            <ul class="result--sources" role="list">
+              <%= for source <- stats.sources do %>
+                <li>
+                  <b><%= source.name %></b>
+                  <div <%= if source.car == stats.max_car, do: "class=max" %>>
+                    🚗 <%= format(source.car) %>
+                  </div>
+                  </h3>
+                  <div <%= if source.train == stats.max_train, do: "class=max" %>>
+                    🚅
+                    <%= if source.train != nil do %>
+                      <%= format(source.train) %>
+                    <% else %>
+                      N/A
+                    <% end %>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
 </div>

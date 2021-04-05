@@ -49,21 +49,17 @@ defmodule EquirouteWeb.PageController do
         train_durations = Enum.map(train_matrix, &Enum.at(&1, j))
 
         stats = %{
-          total: Enum.sum(car_durations) |> TimeFormat.format(),
-          avg: Stats.avg(car_durations) |> TimeFormat.format(),
-          max_car: Enum.max(car_durations) |> TimeFormat.format(),
-          max_train: Enum.max(train_durations) |> TimeFormat.format(),
-          range: Stats.range(car_durations) |> TimeFormat.format(),
-          std_deviation: Stats.standard_deviation(car_durations) |> TimeFormat.format(),
+          total: Enum.sum(car_durations),
+          avg: Stats.avg(car_durations),
+          max_car: Enum.max(car_durations),
+          max_train: Enum.max(train_durations),
+          range: Stats.range(car_durations),
+          std_deviation: Stats.standard_deviation(car_durations),
           sources:
             for {source, i} <- Enum.with_index(sources), into: [] do
-              car =
-                Enum.at(Enum.at(car_matrix["durations"], i), j)
-                |> TimeFormat.format()
+              car = Enum.at(Enum.at(car_matrix["durations"], i), j)
 
-              train =
-                Enum.at(Enum.at(train_matrix, i), j)
-                |> TimeFormat.format()
+              train = Enum.at(Enum.at(train_matrix, i), j)
 
               %{
                 name: source.name,
@@ -75,7 +71,19 @@ defmodule EquirouteWeb.PageController do
 
         {destination.name, stats}
       end
+      |> Enum.sort_by(fn {_, stats} ->
+        Enum.min([stats.max_car, stats.max_train] |> IO.inspect()) |> IO.inspect()
+      end)
 
-    render(conn, "result.html", result: result)
+    random_sncf_ids =
+      10
+      |> Sncf.random_administrative_regions()
+      |> Enum.map(& &1["id"])
+
+    render(conn, "result.html",
+      result: result,
+      sources: params["sources"],
+      random_sncf_ids: random_sncf_ids
+    )
   end
 end

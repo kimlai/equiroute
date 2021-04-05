@@ -40,13 +40,52 @@ defmodule Equiroute.Sncf do
     |> Enum.min(fn -> nil end)
   end
 
-  defp send_request(url, query_params \\ []) do
+  def all_administrative_regions() do
+    "/stop_areas"
+    |> build_url(count: 1000)
+    |> all_administrative_regions()
+  end
+
+  def all_administrative_regions(url) do
+    %{"links" => links, "stop_areas" => stop_areas} = get_json(url)
+
+    administrative_regions =
+      stop_areas
+      |> Enum.filter(&Map.has_key?(&1, "administrative_regions"))
+      |> Enum.map(&Enum.at(&1["administrative_regions"], 0))
+
+    case Enum.find(links, &(&1["type"] == "next")) do
+      nil ->
+        administrative_regions
+
+      %{"href" => url} ->
+        [administrative_regions | all_administrative_regions(url)]
+    end
+  end
+
+  def random_administrative_regions(n) do
+    regions =
+      "priv/sncf_data/administrative_regions"
+      |> File.read!()
+      |> :erlang.binary_to_term()
+      |> Enum.shuffle()
+      |> Enum.take(n)
+  end
+
+  defp build_url(url, query_params) do
     token = System.get_env("SNCF_TOKEN")
     params = Query.encode(query_params ++ [key: token])
-    url = "#{@base_url}#{url}?#{params}"
+    "#{@base_url}#{url}?#{params}"
+  end
 
+  defp send_request(url, query_params \\ []) do
+    url
+    |> build_url(query_params)
+    |> get_json()
+  end
+
+  defp get_json(url) do
     {:ok, %Finch.Response{body: body}} = Finch.build(:get, url) |> Finch.request(MyFinch)
-
     Jason.decode!(body)
   end
 end
