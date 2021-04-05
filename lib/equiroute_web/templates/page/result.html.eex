@@ -2,11 +2,6 @@
   <%= for {destination, stats} <- @result do %>
     <li>
       <h2><%= destination %></h2>
-      <div>Temps total : <%= stats.total %></div>
-      <div>Temps moyen : <%= stats.avg %></div>
-      <div>Max : <%= stats.max %></div>
-      <div>Étendue : <%= stats.range %></div>
-      <div>Écart-type : <%= stats.std_deviation %></div>
       <ul>
         <%= for source <- stats.sources do %>
           <li>
@@ -22,6 +17,14 @@
           </li>
         <% end %>
       </ul>
+      <details>
+        <summary>Statistiques</summary>
+        <div>Temps total : <%= stats.total %></div>
+        <div>Temps moyen : <%= stats.avg %></div>
+        <div>Max : <%= stats.max %></div>
+        <div>Étendue : <%= stats.range %></div>
+        <div>Écart-type : <%= stats.std_deviation %></div>
+      </details>
     </li>
   <% end %>
 </li>
