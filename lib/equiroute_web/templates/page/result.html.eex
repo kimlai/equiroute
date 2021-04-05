@@ -1,30 +1,34 @@
-<ul>
-  <%= for {destination, stats} <- @result do %>
-    <li>
-      <h2><%= destination %></h2>
-      <ul>
-        <%= for source <- stats.sources do %>
-          <li>
-            <b><%= source.name %></b>
-            <div>🚗 <%= source.car %></h3>
-            <div>🚅
-              <%= if source.train != nil do %>
-                <%= source.train %>
-              <% else %>
-                pas de trajet trouvé
-              <% end %>
-            </div>
-          </li>
-        <% end %>
-      </ul>
-      <details>
-        <summary>Statistiques</summary>
-        <div>Temps total : <%= stats.total %></div>
-        <div>Temps moyen : <%= stats.avg %></div>
-        <div>Max : <%= stats.max %></div>
-        <div>Étendue : <%= stats.range %></div>
-        <div>Écart-type : <%= stats.std_deviation %></div>
-      </details>
-    </li>
-  <% end %>
-</li>
+<div class="center">
+  <ul role="list" class="result">
+    <%= for {destination, stats} <- @result do %>
+      <li class="flow">
+        <h2><%= destination %></h2>
+        <div>
+          <ul class="result--sources" role="list">
+            <%= for source <- stats.sources do %>
+              <li>
+                <b><%= source.name %></b>
+                <div>🚗 <%= source.car %></h3>
+                <div>🚅
+                  <%= if source.train != nil do %>
+                    <%= source.train %>
+                  <% else %>
+                    pas de trajet trouvé
+                  <% end %>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+        <details>
+          <summary>Statistiques</summary>
+          <div>Temps total : <%= stats.total %></div>
+          <div>Temps moyen : <%= stats.avg %></div>
+          <div>Max : <%= stats.max %></div>
+          <div>Étendue : <%= stats.range %></div>
+          <div>Écart-type : <%= stats.std_deviation %></div>
+        </details>
+      </li>
+    <% end %>
+  </li>
+</div>

@@ -15,6 +15,15 @@ body {
   }
 }
 
+.flow > * + * {
+  margin-top: 1rem;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
 form > * + * {
   margin-top: 1.5rem;
 }
@@ -22,4 +31,23 @@ form > * + * {
 p {
   max-width: 80ch;
   margin-bottom: 3rem;
+}
+
+.result {
+  padding-left: 0;
+}
+
+.result > * + * {
+  margin-top: 2rem;
+}
+
+.result--sources {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -1rem;
+  padding-left: 0;
+}
+
+.result--sources li {
+  margin: 1rem;
 }

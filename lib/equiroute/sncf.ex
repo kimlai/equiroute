@@ -27,7 +27,7 @@ defmodule Equiroute.Sncf do
     %{"places" => [place | []]} = Jason.decode!(body)
 
     %{
-      name: place["name"],
+      name: String.replace(place["name"], ~r/\s*\(.*?\)\s*/, ""),
       coordinates: [
         place["administrative_region"]["coord"]["lon"],
         place["administrative_region"]["coord"]["lat"]

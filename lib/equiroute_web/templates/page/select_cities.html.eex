@@ -13,7 +13,7 @@
     <% end %>
   </fieldset>
   <fieldset>
-    <legend>Arrivées à</legend>
+    <legend>Se retrouver à</legend>
     <%= for destinations <- @destinations do %>
       <select name="destinations[]" />
         <%= for option <- destinations do %>
