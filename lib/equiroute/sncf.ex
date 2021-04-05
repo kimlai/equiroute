@@ -59,7 +59,7 @@ defmodule Equiroute.Sncf do
         administrative_regions
 
       %{"href" => url} ->
-        [administrative_regions | all_administrative_regions(url)]
+        administrative_regions ++ all_administrative_regions(url)
     end
   end
 
