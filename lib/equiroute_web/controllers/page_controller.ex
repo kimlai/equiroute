@@ -36,9 +36,12 @@ defmodule EquirouteWeb.PageController do
     train_matrix =
       for source <- sources, into: [] do
         for destination <- destinations, into: [] do
-          Sncf.journey_duration(source.sncf_id, destination.sncf_id)
+          Task.async(fn ->
+            Sncf.journey_duration(source.sncf_id, destination.sncf_id)
+          end)
         end
       end
+      |> Enum.map(fn list -> Enum.map(list, &Task.await/1) end)
 
     result =
       for {destination, j} <- Enum.with_index(destinations), into: %{} do
