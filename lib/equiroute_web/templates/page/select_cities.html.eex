@@ -4,26 +4,14 @@
 <form action="/result">
   <fieldset>
     <legend>Départs de</legend>
-    <%= for source <- @sources do %>
-      <select name="sources[]" />
-        <%= for option <- source do %>
-          <option value="<%= option.sncf_id %>"><%= option.name %></option>
-        <% end %>
-      </select>
-    <% end %>
+    <div class="flow">
+      <%= render "cities_select.html", cities: @sources, no_results: @sources_no_results, input_name: "sources" %>
+    </div>
   </fieldset>
   <fieldset>
     <legend>Se retrouver à</legend>
     <div class="flow">
-      <div>
-        <%= for destinations <- @destinations do %>
-          <select name="destinations[]" />
-            <%= for option <- destinations do %>
-              <option value="<%= option.sncf_id %>"><%= option.name %></option>
-            <% end %>
-          </select>
-        <% end %>
-      </div>
+      <%= render "cities_select.html", cities: @destinations, no_results: @destinations_no_results, input_name: "destinations" %>
       <div>
         <input
           id="random" type="checkbox" name="random" value="true"

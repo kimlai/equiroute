@@ -104,7 +104,7 @@ form > * + * {
   margin-top: 1.5rem;
 }
 
-p {
+main > p {
   max-width: 80ch;
   margin-bottom: 3rem;
 }

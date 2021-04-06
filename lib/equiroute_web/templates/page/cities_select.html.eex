@@ -1,0 +1,20 @@
+<div>
+  <%= for {_, sources} <- @cities do %>
+    <select name="<%= @input_name%>[]" />
+      <%= for option <- sources do %>
+        <option value="<%= option.sncf_id %>"><%= option.name %></option>
+      <% end %>
+    </select>
+  <% end %>
+</div>
+<%= if length(@no_results) > 0 do %>
+  <div>
+    <p>Nous n'avons pas trouvé de gare pour les villes suivantes :</p>
+    <ul>
+      <%= for {name, _} <- @no_results do %>
+        <li><%= name %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+</div>

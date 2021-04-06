@@ -40,9 +40,21 @@ defmodule EquirouteWeb.PageController do
       )
     end
 
+    {sources, sources_no_results} =
+      sources_params
+      |> Enum.zip(sources)
+      |> Enum.split_with(&(elem(&1, 1) != []))
+
+    {destinations, destinations_no_results} =
+      destinations_params
+      |> Enum.zip(destinations)
+      |> Enum.split_with(&(elem(&1, 1) != []))
+
     render(conn, "select_cities.html",
       sources: sources,
       destinations: destinations,
+      sources_no_results: sources_no_results,
+      destinations_no_results: destinations_no_results,
       random: params["random"] == "true"
     )
   end

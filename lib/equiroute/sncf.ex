@@ -15,7 +15,7 @@ defmodule Equiroute.Sncf do
     "priv/sncf_data/administrative_regions"
     |> File.read!()
     |> :erlang.binary_to_term()
-    |> Enum.filter(&(similarity.(&1) > 0.8))
+    |> Enum.filter(&(similarity.(&1) > 0.9))
     |> Enum.sort_by(&similarity.(&1), :desc)
     |> Enum.map(&Map.put(&1, :sncf_id, &1["id"]))
     |> Enum.map(&Map.put(&1, :name, &1["name"]))
