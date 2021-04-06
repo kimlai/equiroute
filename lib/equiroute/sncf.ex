@@ -92,6 +92,23 @@ defmodule Equiroute.Sncf do
   end
 
   defp get_json(url) do
+    case ConCache.get(:equiroute_cache, url) do
+      nil ->
+        case do_get_json(url) do
+          {:ok, response} ->
+            ConCache.put(:equiroute_cache, url, {:ok, response})
+            {:ok, response}
+
+          error ->
+            error
+        end
+
+      cached ->
+        cached
+    end
+  end
+
+  defp do_get_json(url) do
     Finch.build(:get, url)
     |> Finch.request(MyFinch)
     |> case do

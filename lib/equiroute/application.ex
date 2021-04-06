@@ -15,7 +15,13 @@ defmodule Equiroute.Application do
       EquirouteWeb.Endpoint,
       # Start a worker by calling: Equiroute.Worker.start_link(arg)
       # {Equiroute.Worker, arg}
-      {Finch, name: MyFinch}
+      {Finch, name: MyFinch},
+      {ConCache,
+       [
+         name: :equiroute_cache,
+         ttl_check_interval: :timer.minutes(1),
+         global_ttl: :timer.hours(12)
+       ]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

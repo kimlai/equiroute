@@ -42,7 +42,8 @@ defmodule Equiroute.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:finch, "~> 0.6"}
+      {:finch, "~> 0.6"},
+      {:con_cache, "~> 1.0"}
     ]
   end
 
