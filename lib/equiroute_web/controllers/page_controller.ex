@@ -27,22 +27,20 @@ defmodule EquirouteWeb.PageController do
   end
 
   def compute(conn, params) do
-    sources = Enum.map(params["sources"], &Sncf.place/1)
-
-    random_sncf_ids =
-      if params["random"] == "true" do
+    if params["random"] == "true" do
+      random_ids =
         10
         |> Sncf.random_administrative_regions()
         |> Enum.map(& &1["id"])
-      else
-        []
-      end
 
-    destinations =
-      params
-      |> Map.get("destinations", [])
-      |> (&(&1 ++ random_sncf_ids)).()
-      |> Enum.map(&Sncf.place/1)
+      url =
+        EquirouteWeb.PageView.random_link(params["sources"], random_ids ++ params["destinations"])
+
+      redirect(conn, to: url)
+    end
+
+    sources = Enum.map(params["sources"], &Sncf.place/1)
+    destinations = Enum.map(params["destinations"], &Sncf.place/1)
 
     car_matrix = Mapbox.matrix(sources, destinations)
 
