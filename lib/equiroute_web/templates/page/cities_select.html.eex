@@ -9,7 +9,7 @@
 </div>
 <%= if length(@no_results) > 0 do %>
   <div>
-    <p>Nous n'avons pas trouvé de gare pour les villes suivantes :</p>
+    <p>Nous n'avons pas trouvé de gare pour les villes suivantes&nbsp;:</p>
     <ul>
       <%= for {name, _} <- @no_results do %>
         <li><%= name %></li>
