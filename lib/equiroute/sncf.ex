@@ -1,11 +1,15 @@
 defmodule Equiroute.Sncf do
   alias Plug.Conn.Query
+  alias Equiroute.StringNormalize
 
   @base_url "https://api.sncf.com/v1/coverage/sncf"
 
   def find_place(query) do
     similarity = fn place ->
-      String.jaro_distance(String.downcase(place["name"]), String.downcase(query))
+      String.jaro_distance(
+        StringNormalize.normalize(place["name"]),
+        StringNormalize.normalize(query)
+      )
     end
 
     "priv/sncf_data/administrative_regions"

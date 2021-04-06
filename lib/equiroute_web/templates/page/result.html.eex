@@ -1,7 +1,7 @@
 <div class="center">
   <div>
     <div class="cta">
-      <a href="<%= random_link(@sources, @random_sncf_ids) %>">Au hasard</a>
+      <a href="<%= result_link(@sources, @random_sncf_ids) %>">Au hasard</a>
     </div>
     <ul role="list" class="result">
       <%= for {{destination, stats}, i} <- Enum.with_index(@result) do %>

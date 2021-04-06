@@ -3,21 +3,42 @@ defmodule EquirouteWeb.PageController do
   alias Equiroute.Sncf
   alias Equiroute.Mapbox
   alias Equiroute.TimeFormat
+  alias Equiroute.StringNormalize
 
   def index(conn, _params) do
     render(conn, "index.html")
   end
 
   def select_cities(conn, params) do
-    sources =
-      params["sources"]
-      |> Enum.filter(&(&1 != ""))
-      |> Enum.map(&Sncf.find_place/1)
+    sources_params = Enum.filter(params["sources"], &(&1 != ""))
+    destinations_params = Enum.filter(params["destinations"], &(&1 != ""))
 
-    destinations =
-      params["destinations"]
-      |> Enum.filter(&(&1 != ""))
-      |> Enum.map(&Sncf.find_place/1)
+    sources = Enum.map(sources_params, &Sncf.find_place/1)
+    destinations = Enum.map(destinations_params, &Sncf.find_place/1)
+
+    # if we have perfect matches for all params, we skip the select cities page,
+    # redirecting directly to the result page
+    sources_first_match = Enum.map(sources, &Enum.at(&1, 0, %{name: ""}))
+    destinations_first_match = Enum.map(destinations, &Enum.at(&1, 0, %{name: ""}))
+
+    normalized_params =
+      (sources_params ++ destinations_params)
+      |> Enum.map(&StringNormalize.normalize/1)
+
+    normalized_places =
+      (sources_first_match ++ destinations_first_match)
+      |> Enum.map(&StringNormalize.normalize(&1.name))
+
+    if normalized_params == normalized_places do
+      redirect(conn,
+        to:
+          EquirouteWeb.PageView.result_link(
+            Enum.map(sources_first_match, & &1.sncf_id),
+            Enum.map(destinations_first_match, & &1.sncf_id),
+            params["random"] == "true"
+          )
+      )
+    end
 
     render(conn, "select_cities.html",
       sources: sources,
@@ -34,7 +55,7 @@ defmodule EquirouteWeb.PageController do
         |> Enum.map(& &1["id"])
 
       url =
-        EquirouteWeb.PageView.random_link(params["sources"], random_ids ++ params["destinations"])
+        EquirouteWeb.PageView.result_link(params["sources"], random_ids ++ params["destinations"])
 
       redirect(conn, to: url)
     end
