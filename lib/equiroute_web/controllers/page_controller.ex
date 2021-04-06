@@ -78,7 +78,10 @@ defmodule EquirouteWeb.PageController do
         |> Enum.map(& &1["id"])
 
       url =
-        EquirouteWeb.PageView.result_link(params["sources"], random_ids ++ params["destinations"])
+        EquirouteWeb.PageView.result_link(
+          params["sources"],
+          random_ids ++ (params["destinations"] || [])
+        )
 
       redirect(conn, to: url)
     end
