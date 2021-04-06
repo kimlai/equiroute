@@ -74,6 +74,10 @@ select {
  * APP STYLES
  ***************/
 
+ul[role="list"] {
+  padding-left: 0;
+}
+
 :root {
   font-size: 1rem;
 }
@@ -83,7 +87,7 @@ select {
 }
 
 body {
-  padding: 1rem;
+  padding: 5rem 1rem;
 }
 @media (min-width: 48em) {
   body {

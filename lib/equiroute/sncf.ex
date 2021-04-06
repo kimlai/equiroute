@@ -1,6 +1,7 @@
 defmodule Equiroute.Sncf do
   alias Plug.Conn.Query
   alias Equiroute.StringNormalize
+  alias Equiroute.Http
 
   @base_url "https://api.sncf.com/v1/coverage/sncf"
 
@@ -19,6 +20,31 @@ defmodule Equiroute.Sncf do
     |> Enum.sort_by(&similarity.(&1), :desc)
     |> Enum.map(&Map.put(&1, :sncf_id, &1["id"]))
     |> Enum.map(&Map.put(&1, :name, &1["name"]))
+  end
+
+  def find_closest(coordinates) do
+    "priv/sncf_data/administrative_regions"
+    |> File.read!()
+    |> :erlang.binary_to_term()
+    |> Enum.map(&Map.put(&1, :sncf_id, &1["id"]))
+    |> Enum.map(&Map.put(&1, :name, &1["name"]))
+    |> Enum.map(&Map.put(&1, :distance, harvesine(&1["coord"], coordinates)))
+    |> Enum.filter(&(&1.distance < 50))
+    |> Enum.sort_by(& &1.distance)
+    |> Enum.take(3)
+  end
+
+  # https://github.com/acmeism/RosettaCodeData/blob/9ad63ea473a958506c041077f1d810c0c7c8c18d/Task/Haversine-formula/Elixir/haversine-formula.elixir
+  defp harvesine(%{"lat" => lat1, "lon" => long1}, [long2, lat2]) do
+    {lat1, _} = Float.parse(lat1)
+    {long1, _} = Float.parse(long1)
+    v = :math.pi() / 180
+    r = 6372.8
+
+    dlat = :math.sin((lat2 - lat1) * v / 2)
+    dlong = :math.sin((long2 - long1) * v / 2)
+    a = dlat * dlat + dlong * dlong * :math.cos(lat1 * v) * :math.cos(lat2 * v)
+    r * 2 * :math.asin(:math.sqrt(a))
   end
 
   def place(id) do
@@ -58,7 +84,7 @@ defmodule Equiroute.Sncf do
   end
 
   def all_administrative_regions(url) do
-    %{"links" => links, "stop_areas" => stop_areas} = get_json!(url)
+    %{"links" => links, "stop_areas" => stop_areas} = Http.get_json!(url)
 
     administrative_regions =
       stop_areas
@@ -92,43 +118,6 @@ defmodule Equiroute.Sncf do
   defp send_request(url, query_params \\ []) do
     url
     |> build_url(query_params)
-    |> get_json()
-  end
-
-  defp get_json(url) do
-    case ConCache.get(:equiroute_cache, url) do
-      nil ->
-        case do_get_json(url) do
-          {:ok, response} ->
-            ConCache.put(:equiroute_cache, url, {:ok, response})
-            {:ok, response}
-
-          error ->
-            error
-        end
-
-      cached ->
-        cached
-    end
-  end
-
-  defp do_get_json(url) do
-    Finch.build(:get, url)
-    |> Finch.request(MyFinch)
-    |> case do
-      {:ok, %Finch.Response{status: 200, body: body}} ->
-        {:ok, Jason.decode!(body)}
-
-      {:ok, %Finch.Response{status: 429}} ->
-        {:error, :quota_limit_reached}
-
-      _ ->
-        {:error, :unknown}
-    end
-  end
-
-  defp get_json!(url) do
-    {:ok, response} = get_json(url)
-    response
+    |> Http.get_json()
   end
 end

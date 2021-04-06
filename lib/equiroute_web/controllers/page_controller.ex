@@ -4,6 +4,7 @@ defmodule EquirouteWeb.PageController do
   alias Equiroute.Mapbox
   alias Equiroute.TimeFormat
   alias Equiroute.StringNormalize
+  alias Equiroute.Geoapify
 
   def index(conn, _params) do
     render(conn, "index.html")
@@ -53,10 +54,20 @@ defmodule EquirouteWeb.PageController do
     render(conn, "select_cities.html",
       sources: sources,
       destinations: destinations,
-      sources_no_results: sources_no_results,
-      destinations_no_results: destinations_no_results,
+      sources_no_results: Enum.map(sources_no_results, &find_closest/1),
+      destinations_no_results: Enum.map(destinations_no_results, &find_closest/1),
       random: params["random"] == "true"
     )
+  end
+
+  defp find_closest({name, _}) do
+    case Geoapify.geocode(name) do
+      {:ok, {geocoded_name, coordinates}} ->
+        {geocoded_name, Sncf.find_closest(coordinates)}
+
+      _ ->
+        {name, []}
+    end
   end
 
   def compute(conn, params) do

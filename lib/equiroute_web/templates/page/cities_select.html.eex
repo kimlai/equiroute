@@ -9,12 +9,36 @@
 </div>
 <%= if length(@no_results) > 0 do %>
   <div>
-    <p>Nous n'avons pas trouvé de gare pour les villes suivantes&nbsp;:</p>
-    <ul>
-      <%= for {name, _} <- @no_results do %>
-        <li><%= name %></li>
+    <p>
+      Veuillez préciser les gares
+      <%= if @input_name == "sources", do: "de départ", else: "d'arrivée" %>
+    pour les points suivants&nbsp;:
+    <p>
+    <ul class="flow">
+      <%= for {name, closest_matches} <- @no_results do %>
+        <li>
+          <div><%= name %></div>
+          <%= if closest_matches != [] do %>
+            <ul role="list">
+              <%= for match <- closest_matches do %>
+                <li>
+                  <input
+                    type="checkbox"
+                    name="<%= @input_name%>[]"
+                    value="<%= match.sncf_id %>"
+                    id="match_<%= match.sncf_id %>"
+                    />
+                  <label for="match_<%= match.sncf_id %>"match.name %>
+                    <%= match.name %> (<%= trunc(match.distance) %>km)
+                  </label>
+                </li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p>Aucune gare à proximité (50km)<p>
+          <% end %>
+        </li>
       <% end %>
     </ul>
   </div>
 <% end %>
-</div>
