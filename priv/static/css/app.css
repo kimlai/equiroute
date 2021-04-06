@@ -126,6 +126,13 @@ p {
 .flex > * {
   margin: 1rem;
 }
+@media (max-width: 48em) {
+  .flex {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    margin: -1rem;
+  }
+}
 
 .result--sources {
   display: flex;
