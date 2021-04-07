@@ -43,7 +43,10 @@ defmodule Equiroute.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:finch, "~> 0.6"},
-      {:con_cache, "~> 1.0"}
+      {:con_cache, "~> 1.0"},
+      {:castore, "~> 0.1.5"},
+      {:mint, "~> 1.0"},
+      {:tz, "~> 0.12.0"}
     ]
   end
 

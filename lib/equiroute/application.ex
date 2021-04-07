@@ -21,7 +21,8 @@ defmodule Equiroute.Application do
          name: :equiroute_cache,
          ttl_check_interval: :timer.minutes(1),
          global_ttl: :timer.hours(12)
-       ]}
+       ]},
+      {Tz.UpdatePeriodically, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

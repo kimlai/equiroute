@@ -65,7 +65,7 @@ defmodule Equiroute.Sncf do
   end
 
   def journey_duration(from, to) do
-    case send_request("/journeys", from: from, to: to) do
+    case send_request("/journeys", from: from, to: to, datetime: tomorrow_at_7am()) do
       {:ok, response} ->
         response
         |> Map.get("journeys", [])
@@ -75,6 +75,12 @@ defmodule Equiroute.Sncf do
       {:error, _} ->
         nil
     end
+  end
+
+  defp tomorrow_at_7am do
+    Date.utc_today()
+    |> DateTime.new!(Time.new!(7, 0, 0), "Europe/Paris")
+    |> DateTime.to_iso8601()
   end
 
   def all_administrative_regions() do
