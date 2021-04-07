@@ -17,6 +17,7 @@ defmodule EquirouteWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    post "/", PageController, :validate_cities
     get "/select-cities", PageController, :select_cities
     get "/result", PageController, :compute
   end

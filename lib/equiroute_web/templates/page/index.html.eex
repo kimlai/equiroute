@@ -2,24 +2,27 @@
   Trouvez l'endroit le plus équitable pour se retrouver à plusieurs.
 </p>
 
-<form action="/select-cities">
+<%= form_for :form, Routes.page_path(EquirouteWeb.Endpoint, :validate_cities), fn f -> %>
+  <%= if @error do %>
+    <p class="error"><%= @error %></p>
+  <% end %>
   <fieldset>
     <legend>Départs de</legend>
-    <input name="sources[]" placeholder="Paris" />
-    <input name="sources[]" placeholder="Marseille"/>
-    <input name="sources[]" placeholder="Lyon"/>
-    <input name="sources[]" placeholder="Nantes"/>
-    <input name="sources[]" placeholder="Blois"/>
+    <input name="sources[]" placeholder="Paris" value="<%= Enum.at(@sources, 0) %>" />
+    <input name="sources[]" placeholder="Marseille" value="<%= Enum.at(@sources, 1) %>" />
+    <input name="sources[]" placeholder="Lyon" value="<%= Enum.at(@sources, 2) %>" />
+    <input name="sources[]" placeholder="Nantes" value="<%= Enum.at(@sources, 3) %>" />
+    <input name="sources[]" placeholder="Blois" value="<%= Enum.at(@sources, 4) %>" />
   </fieldset>
   <fieldset>
     <legend>Se retrouver à</legend>
     <div class="flow">
       <div>
-        <input name="destinations[]" placeholder="Clermont-Ferrand"/>
-        <input name="destinations[]" placeholder="Brest"/>
-        <input name="destinations[]" placeholder="Bourges"/>
-        <input name="destinations[]" placeholder="Pau"/>
-        <input name="destinations[]" placeholder="Lons-le-Saunier"/>
+        <input name="destinations[]" placeholder="Clermont-Ferrand" value="<%= Enum.at(@destinations, 0) %>" />
+        <input name="destinations[]" placeholder="Brest" value="<%= Enum.at(@destinations, 1) %>" />
+        <input name="destinations[]" placeholder="Bourges" value="<%= Enum.at(@destinations, 2) %>" />
+        <input name="destinations[]" placeholder="Pau" value="<%= Enum.at(@destinations, 3) %>" />
+        <input name="destinations[]" placeholder="Lons-le-Saunier" value="<%= Enum.at(@destinations, 4) %>" />
       </div>
       <div>
         <input id="random" type="checkbox" name="random" value="true">
@@ -28,4 +31,4 @@
     </div>
   </fieldset>
   <button>C'est parti</button>
-</form>
+<% end %>

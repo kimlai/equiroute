@@ -5,9 +5,25 @@ defmodule EquirouteWeb.PageController do
   alias Equiroute.TimeFormat
   alias Equiroute.StringNormalize
   alias Equiroute.Geoapify
+  alias Plug.Conn.Query
 
   def index(conn, _params) do
-    render(conn, "index.html")
+    render(conn, "index.html", error: nil, sources: [], destinations: [])
+  end
+
+  def validate_cities(conn, params) do
+    sources_params = Enum.filter(params["sources"], &(&1 != ""))
+    destinations_params = Enum.filter(params["destinations"], &(&1 != ""))
+
+    if(sources_params == [] or (destinations_params == [] and !params["random"])) do
+      render(conn, "index.html",
+        error: "Veuillez entrer au moins une ville de départ et une ville d'arrivée",
+        sources: params["sources"],
+        destinations: params["destinations"]
+      )
+    else
+      redirect(conn, to: "/select-cities?#{Query.encode(params)}")
+    end
   end
 
   def select_cities(conn, params) do

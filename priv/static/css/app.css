@@ -116,6 +116,10 @@ main > p {
   margin-bottom: 3rem;
 }
 
+.error {
+  color: red;
+}
+
 .result {
   padding-left: 0;
 }
