@@ -78,18 +78,21 @@ ul[role="list"] {
   padding-left: 0;
 }
 
-:root {
-  font-size: 1rem;
-}
-
 * {
   font-family: monospace;
+}
+
+fieldset {
+  padding: 1rem;
 }
 
 body {
   padding: 5rem 1rem;
 }
 @media (min-width: 48em) {
+  :root {
+    font-size: max(16px, 1rem);
+  }
   body {
     padding: 5rem;
   }
