@@ -31,7 +31,7 @@ defmodule Equiroute.Sncf do
     |> Enum.map(&Map.put(&1, :distance, harvesine(&1["coord"], coordinates)))
     |> Enum.filter(&(&1.distance < 50))
     |> Enum.sort_by(& &1.distance)
-    |> Enum.take(3)
+    |> Enum.take(5)
   end
 
   # https://github.com/acmeism/RosettaCodeData/blob/9ad63ea473a958506c041077f1d810c0c7c8c18d/Task/Haversine-formula/Elixir/haversine-formula.elixir
