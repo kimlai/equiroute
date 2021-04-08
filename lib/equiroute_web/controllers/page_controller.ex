@@ -22,58 +22,57 @@ defmodule EquirouteWeb.PageController do
         destinations: params["destinations"]
       )
     else
-      redirect(conn, to: "/select-cities?#{Query.encode(params)}")
+      redirect(conn,
+        to: "/select-cities?#{Query.encode(Map.take(params, ["sources", "destinations"]))}"
+      )
     end
   end
 
   def select_cities(conn, params) do
-    sources_params = Enum.filter(params["sources"], &(&1 != ""))
-    destinations_params = Enum.filter(params["destinations"], &(&1 != ""))
+    sources = find_cities(params["sources"])
+    destinations = find_cities(params["destinations"])
 
-    sources = Enum.map(sources_params, &Sncf.find_place/1)
-    destinations = Enum.map(destinations_params, &Sncf.find_place/1)
-
-    # if we have perfect matches for all params, we skip the select cities page,
-    # redirecting directly to the result page
-    sources_first_match = Enum.map(sources, &Enum.at(&1, 0, %{name: ""}))
-    destinations_first_match = Enum.map(destinations, &Enum.at(&1, 0, %{name: ""}))
-
-    normalized_params =
-      (sources_params ++ destinations_params)
-      |> Enum.map(&StringNormalize.normalize/1)
-
-    normalized_places =
-      (sources_first_match ++ destinations_first_match)
-      |> Enum.map(&StringNormalize.normalize(&1.name))
-
-    if normalized_params == normalized_places do
+    if sources.only_perfect_matches and destinations.only_perfect_matches do
       redirect(conn,
         to:
           EquirouteWeb.PageView.result_link(
-            Enum.map(sources_first_match, & &1.sncf_id),
-            Enum.map(destinations_first_match, & &1.sncf_id),
+            Enum.map(sources.matches, fn {_, [match | _]} -> match.sncf_id end),
+            Enum.map(destinations.matches, fn {_, [match | _]} -> match.sncf_id end),
             params["random"] == "true"
           )
       )
     end
 
-    {sources, sources_no_results} =
-      sources_params
-      |> Enum.zip(sources)
-      |> Enum.split_with(&(elem(&1, 1) != []))
-
-    {destinations, destinations_no_results} =
-      destinations_params
-      |> Enum.zip(destinations)
-      |> Enum.split_with(&(elem(&1, 1) != []))
-
     render(conn, "select_cities.html",
-      sources: sources,
-      destinations: destinations,
-      sources_no_results: Enum.map(sources_no_results, &find_closest/1),
-      destinations_no_results: Enum.map(destinations_no_results, &find_closest/1),
+      sources: sources.matches,
+      destinations: destinations.matches,
+      sources_no_results: sources.closest,
+      destinations_no_results: destinations.closest,
       random: params["random"] == "true"
     )
+  end
+
+  defp find_cities(names) do
+    names = Enum.filter(names, &(&1 != ""))
+    results = Enum.map(names, &Sncf.find_place/1)
+
+    normalized_names = Enum.map(names, &StringNormalize.normalize/1)
+
+    normalized_first_matches =
+      results
+      |> Enum.map(&Enum.at(&1, 0, %{name: ""}))
+      |> Enum.map(&StringNormalize.normalize(&1.name))
+
+    {with_results, no_results} =
+      Enum.zip(names, results)
+      |> Enum.split_with(&(elem(&1, 1) != []))
+
+    %{
+      only_perfect_matches: normalized_names == normalized_first_matches,
+      normalized_inputs: Enum.map(names, &StringNormalize.normalize/1),
+      matches: with_results,
+      closest: Enum.map(no_results, &find_closest/1)
+    }
   end
 
   defp find_closest({name, _}) do
