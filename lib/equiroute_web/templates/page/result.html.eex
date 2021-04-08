@@ -9,7 +9,7 @@
           <div class="flex">
             <div
               id="map_<%= i %>"
-              style="width: 10rem; height: 10rem;"
+              style="width: 9rem; height: 9rem;"
               class="map"
               data-lon="<%= Enum.at(stats.coordinates, 0) %>"
               data-lat="<%= Enum.at(stats.coordinates, 1) %>"
@@ -33,15 +33,6 @@
                           n/a
                         <% end %>
                       </div>
-                      <div class="google-map-link">
-                        <span>🗺️</span>
-                        <a
-                          title="voir le trajet <%= source.name %> <%= destination %> sur google map"
-                          href="<%= google_map_url(source, stats) %>"
-                        >
-                          voir
-                        </a>
-                      </div>
                     </li>
                   <% end %>
                 </ul>
@@ -50,6 +41,31 @@
           </div>
         </li>
       <% end %>
+      <section class="flow">
+        <h2>Détails des trajets</h2>
+        <ul role="list" class="flow">
+          <%= for {destination, stats} <- @result do %>
+            <li>
+              <ul role="list">
+                <%= for source <- stats.sources do %>
+                  <li>
+                    <span class="journey-details">
+                      <%= source.name %>&nbsp;<%= arrow(stats.sources, source) %>&nbsp;<%= destination %>
+                    </span>
+                        <span>🗺️</span>
+                        <a
+                          title="voir le trajet <%= source.name %> <%= destination %> sur google map"
+                          href="<%= google_map_url(source, stats) %>"
+                        >
+                          voir
+                        </a>
+                  </li>
+                <% end %>
+              </ul>
+            </li>
+          <% end %>
+        </ul>
+      </section>
     </ul>
   </div>
 </div>

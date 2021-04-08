@@ -18,6 +18,15 @@ defmodule EquirouteWeb.PageView do
     "https://www.google.com/maps/dir/?api=1&#{Query.encode(params)}"
   end
 
+  def arrow(sources, source) do
+    padding =
+      sources
+      |> Enum.map(&String.length(&1.name))
+      |> Enum.max()
+
+    "#{String.pad_leading("", padding - String.length(source.name), "-")}--->"
+  end
+
   def render("scripts.result.html", _) do
     ~E"<script defer src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>"
   end

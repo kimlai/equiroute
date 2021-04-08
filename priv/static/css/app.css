@@ -165,7 +165,6 @@ main > p {
   margin-bottom: 4rem;
 }
 
-.google-map-link a {
-  font-size: 0.8rem;
-  color: inherit;
+.journey-details {
+  white-space: nowrap;
 }
