@@ -7,13 +7,12 @@
       <%= for {{destination, stats}, i} <- Enum.with_index(@result) do %>
         <li>
           <div class="flex">
-            <div
-              id="map_<%= i %>"
-              style="width: 9rem; height: 9rem;"
-              class="map"
-              data-lon="<%= Enum.at(stats.coordinates, 0) %>"
-              data-lat="<%= Enum.at(stats.coordinates, 1) %>"
-            ></div>
+            <div class="map">
+              <img width="160" height="160" loading="lazy" src="https://api.mapbox.com/styles/v1/kim-lai/ckn4ywrgd027z17mqw9ds8fsg/static/pin-s+3fb1ce(<%= Enum.at(stats.coordinates, 0) %>,<%= Enum.at(stats.coordinates, 1) %>)/1.59, 47.22,3/160x160?access_token=pk.eyJ1Ijoia2ltbGFpIiwiYSI6ImNpdHg4b3psMDAwMnAzd29hZ2VrbzVmeTcifQ.JEzjYNojtEPRBove3beibA&logo=false&attribution=false" />
+              <div class="attribution">
+                <span>©</span><a href='https://www.mapbox.com/about/maps/'>Mapbox</a><span>©</span><a href='http://www.openstreetmap.org/copyright'>OSM</a>
+              </div>
+            </div>
             <div class="flow">
               <h2><%= destination %></h2>
               <div>

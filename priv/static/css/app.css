@@ -168,3 +168,22 @@ main > p {
 .journey-details {
   white-space: nowrap;
 }
+
+.map {
+  position: relative;
+}
+
+.attribution {
+  color: #888;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  bottom: -2.5ex;
+}
+.attribution a {
+  font-size: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  margin-left: 0.25rem;
+  margin-right: 0.5rem;
+}
