@@ -23,7 +23,8 @@ defmodule EquirouteWeb.PageController do
       )
     else
       redirect(conn,
-        to: "/select-cities?#{Query.encode(Map.take(params, ["sources", "destinations"]))}"
+        to:
+          "/select-cities?#{Query.encode(Map.take(params, ["sources", "destinations", "random"]))}"
       )
     end
   end
@@ -131,15 +132,9 @@ defmodule EquirouteWeb.PageController do
           coordinates: destination.coordinates,
           sources:
             for {source, i} <- Enum.with_index(sources), into: [] do
-              car = Enum.at(Enum.at(car_matrix["durations"], i), j)
-
-              train = Enum.at(Enum.at(train_matrix, i), j)
-
-              %{
-                name: source.name,
-                car: car,
-                train: train
-              }
+              source
+              |> Map.put(:car, Enum.at(Enum.at(car_matrix["durations"], i), j))
+              |> Map.put(:train, Enum.at(Enum.at(train_matrix, i), j))
             end
         }
 

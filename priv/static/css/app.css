@@ -164,3 +164,8 @@ main > p {
   text-align: center;
   margin-bottom: 4rem;
 }
+
+.google-map-link a {
+  font-size: 0.8rem;
+  color: inherit;
+}

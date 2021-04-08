@@ -13,6 +13,11 @@ defmodule EquirouteWeb.PageView do
     "/result?#{Query.encode([sources: sources, destinations: destinations] ++ extra_params)}"
   end
 
+  def google_map_url(%{coordinates: [lon1, lat1]}, %{coordinates: [lon2, lat2]}) do
+    params = [origin: "#{lat1},#{lon1}", destination: "#{lat2},#{lon2}"]
+    "https://www.google.com/maps/dir/?api=1&#{Query.encode(params)}"
+  end
+
   def render("scripts.result.html", _) do
     ~E"<script defer src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>"
   end

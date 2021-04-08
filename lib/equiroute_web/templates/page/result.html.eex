@@ -9,7 +9,7 @@
           <div class="flex">
             <div
               id="map_<%= i %>"
-              style="width: 9rem; height: 9rem;"
+              style="width: 10rem; height: 10rem;"
               class="map"
               data-lon="<%= Enum.at(stats.coordinates, 0) %>"
               data-lat="<%= Enum.at(stats.coordinates, 1) %>"
@@ -32,6 +32,15 @@
                         <% else %>
                           n/a
                         <% end %>
+                      </div>
+                      <div class="google-map-link">
+                        <span>🗺️</span>
+                        <a
+                          title="voir le trajet <%= source.name %> <%= destination %> sur google map"
+                          href="<%= google_map_url(source, stats) %>"
+                        >
+                          voir
+                        </a>
                       </div>
                     </li>
                   <% end %>
