@@ -26,8 +26,4 @@ defmodule EquirouteWeb.PageView do
 
     "#{String.pad_leading("", padding - String.length(source.name), "-")}--->"
   end
-
-  def render("css.result.html", _) do
-    ~E"<link href='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />"
-  end
 end

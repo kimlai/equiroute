@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Calculateur d'itinéraire à plusieurs</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
-    <%= render_existing view_module(@conn), "scripts." <> view_template(@conn), assigns %>
-    <%= render_existing view_module(@conn), "css." <> view_template(@conn), assigns %>
   </head>
   <body>
     <main>
